@@ -1,0 +1,20 @@
+{
+  "include": ["src"],
+  "exclude": ["node_modules", "build"],
+
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "rootDir": "src",
+    "outDir": "build",
+
+    "noEmitHelpers": true,
+    "inlineSourceMap": true,
+    "removeComments": true,
+    "strict": true,
+    "skipDefaultLibCheck": true,
+    "esModuleInterop": true
+  }
+}

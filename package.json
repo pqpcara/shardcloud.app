@@ -1,0 +1,24 @@
+{
+  "name": "shardcloud.app",
+  "description": "Coming Soon",
+  "version": "0.0.1",
+  "main": "build/index.js",
+  "module": "build/index.mjs",
+  "type": "module",
+  "homepage": "https://shardcloud.app",
+  "author": {
+    "name": "pqpcara",
+    "url": "https://github.com/pqpcara"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx --watch src/index.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
