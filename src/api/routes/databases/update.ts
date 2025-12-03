@@ -4,7 +4,7 @@ export async function updateResources(
   apiKey: string,
   id: string,
   { ram, vcpu }: { ram?: number; vcpu?: number },
-): Promise<APIResponse | string> {
+): Promise<APIResponse | null> {
   try {
     const response = await fetch(
       `https://shardcloud.app/api/databases/${id}/resources`,
@@ -21,16 +21,16 @@ export async function updateResources(
     const data = await response.json();
 
     if (response.status === 429) {
-      return "[ShardCloud] Rate limit exceeded. Try again later.";
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
     }
 
-    if (response.status === 400) {
-      return data.error;
-    }
+    if (response.status === 400) return data.error;
 
     return data;
   } catch (error: any) {
-    return "[ShardCloud] Network or parsing error: " + error.message;
+    console.error("Network or parsing error:", error.message);
+    return null;
   }
 }
 
@@ -38,7 +38,7 @@ export async function updatePassword(
   apiKey: string,
   id: string,
   password: string,
-): Promise<APIResponse | string> {
+): Promise<APIResponse | null> {
   try {
     const response = await fetch(
       `https://shardcloud.app/api/databases/${id}/password`,
@@ -55,15 +55,15 @@ export async function updatePassword(
     const data = await response.json();
 
     if (response.status === 429) {
-      return "[ShardCloud] Rate limit exceeded. Try again later.";
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
     }
 
-    if (response.status === 400) {
-      return data.error;
-    }
+    if (response.status === 400) return data.error;
 
     return data;
   } catch (error: any) {
-    return "[ShardCloud] Network or parsing error: " + error.message;
+    console.error("Network or parsing error:", error.message);
+    return null;
   }
 }

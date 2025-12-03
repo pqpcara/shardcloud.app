@@ -1,6 +1,6 @@
 {
-  "name": "shardcloud.app",
-  "description": "Coming Soon",
+  "name": "shardcloud",
+  "description": "ShardCloud SDK",
   "version": "0.0.1",
   "main": "build/index.js",
   "module": "build/index.mjs",
@@ -18,7 +18,11 @@
     "dev": "tsx --watch src/index.ts"
   },
   "devDependencies": {
+    "@types/node": "^24.10.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "files": [
+    "build"
+  ]
 }

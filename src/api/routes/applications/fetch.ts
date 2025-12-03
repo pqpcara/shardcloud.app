@@ -1,15 +1,14 @@
-import { ConnectionUrlResult } from "../../../types/databases.js";
-import { APIResponse, MetricsResult } from "../../../types/global.js";
+import { AppResponse, AppStatus } from "../../../types/apps.js";
+import { MetricsResult } from "../../../types/global.js";
 
-export async function retrySetup(
+export async function status(
   apiKey: string,
-  id: string,
-): Promise<APIResponse | null> {
+  appId: string,
+): Promise<AppStatus | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/retry-setup`,
+      `https://shardcloud.app/api/apps/${appId}/status`,
       {
-        method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
@@ -23,67 +22,6 @@ export async function retrySetup(
       return null;
     }
 
-    if (response.status === 500) return data.error;
-
-    return data;
-  } catch (error: any) {
-    console.error("Network or parsing error:", error.message);
-    return null;
-  }
-}
-
-export async function initialize(
-  apiKey: string,
-  id: string,
-): Promise<APIResponse | null> {
-  try {
-    const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/initialize`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-
-    const data = await response.json();
-
-    if (response.status === 429) {
-      console.error("Rate limit exceeded. Try again later.");
-      return null;
-    }
-
-    if (response.status === 400) return data.error;
-
-    return data;
-  } catch (error: any) {
-    console.error("Network or parsing error:", error.message);
-    return null;
-  }
-}
-
-export async function stop(
-  apiKey: string,
-  id: string,
-): Promise<APIResponse | null> {
-  try {
-    const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/stop`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-
-    const data = await response.json();
-
-    if (response.status === 429) {
-      console.error("Rate limit exceeded. Try again later.");
-      return null;
-    }
     if (response.status === 400) return data.error;
 
     return data;
@@ -95,11 +33,11 @@ export async function stop(
 
 export async function metrics(
   apiKey: string,
-  id: string,
+  appId: string,
 ): Promise<MetricsResult | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/metrics`,
+      `https://shardcloud.app/api/apps/${appId}/metrics`,
       {
         method: "GET",
         headers: {
@@ -124,13 +62,13 @@ export async function metrics(
   }
 }
 
-export async function connectionUrl(
+export async function logs(
   apiKey: string,
-  id: string,
-): Promise<ConnectionUrlResult | null> {
+  appId: string,
+): Promise<string | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/connection-url`,
+      `https://shardcloud.app/api/apps/${appId}/logs`,
       {
         method: "GET",
         headers: {
@@ -138,6 +76,35 @@ export async function connectionUrl(
         },
       },
     );
+
+    if (response.status === 429) {
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
+    }
+
+    if (response.status === 400) {
+      const error = await response.json();
+      return error.message;
+    }
+
+    const text = await response.text();
+    return text;
+  } catch (error: any) {
+    console.error("Network or parsing error:", error.message);
+    return null;
+  }
+}
+
+export async function fetchId(
+  apiKey: string,
+  appId: string,
+): Promise<AppResponse | null> {
+  try {
+    const response = await fetch(`https://shardcloud.app/api/apps/${appId}`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
 
     const data = await response.json();
 
@@ -150,7 +117,31 @@ export async function connectionUrl(
 
     return data;
   } catch (error: any) {
-    console.error("Network or parsing error:", error.message);
+    console.error("Network or parsing error: " + error.message);
+    return null;
+  }
+}
+
+export async function fetchAll(apiKey: string): Promise<AppResponse[] | null> {
+  try {
+    const response = await fetch(`https://shardcloud.app/api/apps`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status === 429) {
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
+    }
+
+    if (response.status === 500) return data.error;
+
+    return data;
+  } catch (error: any) {
+    console.error("Network or parsing error: " + error.message);
     return null;
   }
 }

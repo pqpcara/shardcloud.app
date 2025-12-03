@@ -1,15 +1,14 @@
 import { APIResponse } from "../../../types/global.js";
 
-export async function deleteDatabase(
+export async function deleteApplication(
   apiKey: string,
-  id: string,
+  appId: string,
 ): Promise<APIResponse | null> {
   try {
-    const response = await fetch(`https://shardcloud.app/api/databases/${id}`, {
+    const response = await fetch(`https://shardcloud.app/api/apps/${appId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
       },
     });
 

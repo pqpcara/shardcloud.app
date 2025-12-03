@@ -1,7 +1,7 @@
 import { Apps } from "./apps.js";
 import { Databases } from "./databases.js";
 
-class ShardCloudClient {
+export class ShardCloudClient {
   private apiKey: string;
 
   constructor(apiKey: string) {
@@ -18,4 +18,3 @@ class ShardCloudClient {
 }
 
 export default ShardCloudClient;
-export { ShardCloudClient };

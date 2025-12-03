@@ -1,15 +1,15 @@
-import { ConnectionUrlResult } from "../../../types/databases.js";
-import { APIResponse, MetricsResult } from "../../../types/global.js";
+import { DomainResponse, UpdateDomain } from "../../../types/domain.js";
+import { APIResponse } from "../../../types/global.js";
 
-export async function retrySetup(
+export async function fetchDomain(
   apiKey: string,
-  id: string,
-): Promise<APIResponse | null> {
+  appId: string,
+): Promise<DomainResponse | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/retry-setup`,
+      `https://shardcloud.app/api/apps/${appId}/domain`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
@@ -32,18 +32,21 @@ export async function retrySetup(
   }
 }
 
-export async function initialize(
+export async function updateDomain(
   apiKey: string,
-  id: string,
-): Promise<APIResponse | null> {
+  appId: string,
+  domain: string,
+): Promise<UpdateDomain | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/initialize`,
+      `https://shardcloud.app/api/apps/${appId}/domain`,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ custom_domain: domain }),
       },
     );
 
@@ -63,45 +66,15 @@ export async function initialize(
   }
 }
 
-export async function stop(
+export async function deleteDomain(
   apiKey: string,
-  id: string,
+  appId: string,
 ): Promise<APIResponse | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/stop`,
+      `https://shardcloud.app/api/apps/${appId}/domain`,
       {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-
-    const data = await response.json();
-
-    if (response.status === 429) {
-      console.error("Rate limit exceeded. Try again later.");
-      return null;
-    }
-    if (response.status === 400) return data.error;
-
-    return data;
-  } catch (error: any) {
-    console.error("Network or parsing error:", error.message);
-    return null;
-  }
-}
-
-export async function metrics(
-  apiKey: string,
-  id: string,
-): Promise<MetricsResult | null> {
-  try {
-    const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/metrics`,
-      {
-        method: "GET",
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
@@ -115,7 +88,7 @@ export async function metrics(
       return null;
     }
 
-    if (response.status === 400 || response.status === 500) return data.error;
+    if (response.status === 500) return data.error;
 
     return data;
   } catch (error: any) {
@@ -124,15 +97,15 @@ export async function metrics(
   }
 }
 
-export async function connectionUrl(
+export async function clearCacheDomain(
   apiKey: string,
-  id: string,
-): Promise<ConnectionUrlResult | null> {
+  appId: string,
+): Promise<APIResponse | null> {
   try {
     const response = await fetch(
-      `https://shardcloud.app/api/databases/${id}/connection-url`,
+      `https://shardcloud.app/api/apps/${appId}/domain/cache`,
       {
-        method: "GET",
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },

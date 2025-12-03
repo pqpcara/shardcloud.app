@@ -1,4 +1,5 @@
-import { DatabaseType } from "./enum/databases.js";
+import { DatabaseStatus, DatabaseType } from "./enum/databases.js";
+import { MetricsResult } from "./global.js";
 
 export interface CreateResult {
   connection_url: string;
@@ -6,7 +7,7 @@ export interface CreateResult {
 }
 
 export interface StatusResult {
-  status: string[];
+  status: DatabaseStatus[];
 }
 
 export interface DatabaseResult {
@@ -25,22 +26,8 @@ export interface DatabaseResult {
     visualizer: boolean;
     size: number;
   };
-  project_info: {
-    ram: number[];
-    vcpu: number[];
-    storage: number;
-    network_receive: number[];
-    network_send: number[];
-  };
-  replica_status: string[];
-}
-
-export interface MatricsResult {
-  ram: number[];
-  vcpu: number[];
-  storage: number;
-  network_receive: number[];
-  network_send: number[];
+  project_info: MetricsResult;
+  replica_status: `${DatabaseStatus}`;
 }
 
 export interface ConnectionUrlResult {

@@ -3,7 +3,7 @@ import { DatabaseResult, StatusResult } from "../../../types/databases.js";
 export async function fetchId(
   apiKey: string,
   id: string,
-): Promise<DatabaseResult | string> {
+): Promise<DatabaseResult | null> {
   try {
     const response = await fetch(`https://shardcloud.app/api/databases/${id}`, {
       headers: {
@@ -15,22 +15,22 @@ export async function fetchId(
     const data = await response.json();
 
     if (response.status === 429) {
-      return "[ShardCloud] Rate limit exceeded. Try again later.";
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
     }
 
-    if (response.status === 404) {
-      return data.error;
-    }
+    if (response.status === 404) return data.error;
 
     return data;
   } catch (error: any) {
-    return "[ShardCloud] Network or parsing error: " + error.message;
+    console.error("Network or parsing error: " + error.message);
+    return null;
   }
 }
 
 export async function fetchAll(
   apiKey: string,
-): Promise<DatabaseResult[] | string> {
+): Promise<DatabaseResult[] | null> {
   try {
     const response = await fetch(`https://shardcloud.app/api/databases`, {
       headers: {
@@ -42,23 +42,22 @@ export async function fetchAll(
     const data = await response.json();
 
     if (response.status === 429) {
-      return "[ShardCloud] Rate limit exceeded. Try again later.";
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
     }
-
-    if (response.status === 404) {
-      return data.error;
-    }
+    if (response.status === 404) return data.error;
 
     return data;
   } catch (error: any) {
-    return "[ShardCloud] Network or parsing error: " + error.message;
+    console.error("Network or parsing error: " + error.message);
+    return null;
   }
 }
 
 export async function fetchStatus(
   apiKey: string,
   id: string,
-): Promise<StatusResult | string> {
+): Promise<StatusResult | null> {
   try {
     const response = await fetch(
       `https://shardcloud.app/api/databases/${id}/status`,
@@ -72,15 +71,15 @@ export async function fetchStatus(
     const data = await response.json();
 
     if (response.status === 429) {
-      return "[ShardCloud] Rate limit exceeded. Try again later.";
+      console.error("Rate limit exceeded. Try again later.");
+      return null;
     }
 
-    if (response.status === 404) {
-      return data.error;
-    }
+    if (response.status === 404) return data.error;
 
     return data;
   } catch (error: any) {
-    return "[ShardCloud] Network or parsing error: " + error.message;
+    console.error("Network or parsing error: " + error.message);
+    return null;
   }
 }
